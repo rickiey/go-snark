@@ -48,12 +48,13 @@ func SealCommitPhase2(c *gin.Context) {
 			glog.Infof("sector %d compute failed: %s", data.SectorID, err.Error())
 			//status = 3
 		} else {
-
+			fmt.Println(result)
 			r, err := json.Marshal(result)
 			if nil != err {
 				glog.Infof("sector %d json marshal failed: %s", data.SectorID, err.Error())
 				//status = 3
 			} else {
+				fmt.Println(r)
 				res = string(r)
 				//status = 2
 			}
