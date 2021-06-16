@@ -41,23 +41,23 @@ func SealCommitPhase2(c *gin.Context) {
 		var (
 			//finalResult string
 			//status int
-			res struct {
-				Proof []byte
-			}
+			res string
 		)
 		result, err := ffi.SealCommitPhase2([]byte(data.Phase1Out), abi.SectorNumber(data.SectorID), abi.ActorID(actorID))
 		if nil != err {
 			glog.Infof("sector %d compute failed: %s", data.SectorID, err.Error())
 			//status = 3
 		} else {
-			fmt.Println(string(result))
-			err = json.Unmarshal(result, &res)
+
+			r, err := json.Marshal(result)
 			if nil != err {
-				glog.Infof("sector %d json unmarshal failed: %s", data.SectorID, err.Error())
+				glog.Infof("sector %d json marshal failed: %s", data.SectorID, err.Error())
 				//status = 3
 			} else {
-
+				res = string(r)
+				//status = 2
 			}
+			fmt.Println(res)
 		}
 
 	}()
