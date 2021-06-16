@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"database/sql"
 	"fmt"
 	"go-snark/utils"
 	"time"
@@ -11,15 +12,15 @@ const WorkerTableName = "gpu_workers"
 func QueryWorker(ipAddr string) (bool, error) {
 	var id int
 	err := DB.QueryRow(fmt.Sprintf(`SELECT id FROM %s WHERE worker_addr = "%s" LIMIT 1`, WorkerTableName, ipAddr)).Scan(&id)
-	if nil != err {
+	if nil != err && err != sql.ErrNoRows {
 		return false, err
 	}
 
-	if id != 0 {
-		return true, nil
+	if err == sql.ErrNoRows {
+		return false, nil
 	}
 
-	return false, fmt.Errorf("cannot find worker %s", ipAddr)
+	return true, nil
 }
 
 func ChangeWorkerStatus(ipAddr, field string, status int) error {
