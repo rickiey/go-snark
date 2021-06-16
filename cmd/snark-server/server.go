@@ -17,20 +17,8 @@ import (
 	"github.com/golang/glog"
 )
 
-var logPath = flag.String("log_path", "", "specify log path")
-
 func init() {
 	flag.Set("stderrthreshold", "INFO")
-	logPath := *logPath
-	if "" == logPath {
-		panic("must specify log path")
-	}
-	err := os.MkdirAll(logPath, 0755)
-	if nil != err {
-		panic(err)
-	}
-	// 设置glog使用的日志路径
-	flag.Set("log_dir", logPath)
 	flag.Parse()
 
 	glog.MaxSize = 1024 * 1024 * 50
@@ -41,7 +29,7 @@ func init() {
 	}
 	gin.SetMode(conf.Conf.Server.Env)
 	// 设置环境变量，限定该进程可见的GPU
-	err = os.Setenv("CUDA_VISIBLE_DEVICES", conf.Conf.Server.GpuVisible)
+	err := os.Setenv("CUDA_VISIBLE_DEVICES", conf.Conf.Server.GpuVisible)
 	if nil != err {
 		panic(err)
 	}
@@ -49,6 +37,9 @@ func init() {
 	glog.Infof("This worker's addr is {}", conf.Conf.Server.IpAddr)
 	glog.Infof("GPU is %s", conf.Conf.Server.GpuType)
 	err = CheckGpu()
+	if nil != err {
+		panic(err)
+	}
 
 	dao.InitDB()
 
@@ -66,7 +57,7 @@ func CheckGpu() error {
 	}
 
 	if len(gpus) < 2 {
-		return fmt.Errorf("Current gpu number is %d", len(gpus))
+		return fmt.Errorf("current gpu number is %d", len(gpus))
 	}
 
 	glog.Infof("This worker has %d GPU devices", len(gpus))
