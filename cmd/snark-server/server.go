@@ -34,7 +34,7 @@ func init() {
 		panic(err)
 	}
 	glog.Infof("CUDA_VISIBLE_DEVICES is %s", conf.Conf.Server.GpuVisible)
-	glog.Infof("This worker's addr is {}", conf.Conf.Server.IpAddr)
+	glog.Infof("This worker's addr is %s", conf.Conf.Server.IpAddr)
 	glog.Infof("GPU is %s", conf.Conf.Server.GpuType)
 	err = CheckGpu()
 	if nil != err {
@@ -56,7 +56,7 @@ func CheckGpu() error {
 		return err
 	}
 
-	if len(gpus) < 2 {
+	if len(gpus) > 1 {
 		return fmt.Errorf("current gpu number is %d", len(gpus))
 	}
 
