@@ -5,7 +5,7 @@
     4. 在go-snark目录, 执行go build -o go-snark cmd/snark-server/server.go
 
 ## 修改
-    1. extern/bellperson/src/gpu/lock.rs
+    1. extern/bellperson/src/gpu/locks.rs
         pub fn lock() -> GPULock {} 注释这一行 //f.lock_exclusive().unwrap();
     2. extern/filecoin-ffi/rust/Cargo.toml
         在最底下添加 

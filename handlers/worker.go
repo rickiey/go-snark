@@ -5,7 +5,6 @@ import (
 	"go-snark/conf"
 	"go-snark/dao"
 	"go-snark/model"
-	"go-snark/resp"
 	"net/http"
 
 	ffi "github.com/filecoin-project/filecoin-ffi"
@@ -17,7 +16,7 @@ import (
 
 // PingPong 调度机服务pingpong
 func PingPong(c *gin.Context) {
-	resp.NormalResult(c, "PONG")
+	c.JSON(http.StatusOK, "PONG")
 }
 
 func SealCommitPhase2(c *gin.Context) {
