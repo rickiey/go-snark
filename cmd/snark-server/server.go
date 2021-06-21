@@ -97,7 +97,6 @@ func main() {
 		glog.Infof("server exit")
 		glog.Flush()
 		return
-	case syscall.SIGHUP:
 	default:
 		return
 	}
