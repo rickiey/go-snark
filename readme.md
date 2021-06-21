@@ -13,5 +13,5 @@
         bellperson = {path = "../../bellperson"}
 ## 运行
     1. 分别添加配置文件config0.toml, config1.toml
-    2. 执行go-snark --conf=config0.toml --log_dir=日志文件路径，使用0号GPU
-    3. 执行go-snark --conf=config1.toml --log_dir=日志文件路径，使用1号GPU
+    2. 执行go-snark --conf=config0.toml 使用0号GPU
+    3. 执行go-snark --conf=config1.toml 使用1号GPU

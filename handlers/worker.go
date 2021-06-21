@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
+	"go-snark/conf"
+	"go-snark/dao"
 	"go-snark/model"
 	"go-snark/resp"
 	"net/http"
@@ -38,29 +39,26 @@ func SealCommitPhase2(c *gin.Context) {
 		return
 	}
 	go func() {
-		var (
-			//finalResult string
-			//status int
-			res string
-		)
+		var status int
+
 		result, err := ffi.SealCommitPhase2([]byte(data.Phase1Out), abi.SectorNumber(data.SectorID), abi.ActorID(actorID))
 		if nil != err {
 			glog.Infof("sector %d compute failed: %s", data.SectorID, err.Error())
-			//status = 3
+			status = 3
 		} else {
 			fmt.Println(result)
-			r, err := json.Marshal(result)
-			if nil != err {
-				glog.Infof("sector %d json marshal failed: %s", data.SectorID, err.Error())
-				//status = 3
-			} else {
-				fmt.Println(r)
-				res = string(r)
-				//status = 2
-			}
-			fmt.Println(res)
+			status = 2
+			fmt.Println(string(result))
 		}
 
+		err = dao.ChangeTaskStatus(string(result), data.Miner, conf.Conf.Server.IpAddr, status, data.SectorID)
+		if nil != err {
+			glog.Infof("update task status failed: %s", err.Error())
+			return
+		}
+
+		glog.Infof("update %s %d task status success", data.Miner, data.SectorID)
+		glog.Info("worker is free now !")
 	}()
 
 	c.JSON(http.StatusOK, "OK")
