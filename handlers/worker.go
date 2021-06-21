@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"fmt"
+	"encoding/hex"
 	"go-snark/conf"
 	"go-snark/dao"
 	"go-snark/model"
@@ -38,19 +38,21 @@ func SealCommitPhase2(c *gin.Context) {
 		return
 	}
 	go func() {
-		var status int
+		var (
+			status      int
+			finalResult string
+		)
 
 		result, err := ffi.SealCommitPhase2([]byte(data.Phase1Out), abi.SectorNumber(data.SectorID), abi.ActorID(actorID))
 		if nil != err {
 			glog.Infof("sector %d compute failed: %s", data.SectorID, err.Error())
 			status = 3
 		} else {
-			fmt.Println(result)
 			status = 2
-			fmt.Println(string(result))
+			finalResult = hex.EncodeToString(result)
 		}
 
-		err = dao.ChangeTaskStatus(string(result), data.Miner, conf.Conf.Server.IpAddr, status, data.SectorID)
+		err = dao.ChangeTaskStatus(finalResult, data.Miner, conf.Conf.Server.IpAddr, status, data.SectorID)
 		if nil != err {
 			glog.Infof("update task status failed: %s", err.Error())
 			return
