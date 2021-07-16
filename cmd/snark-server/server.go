@@ -85,7 +85,7 @@ func main() {
 	}()
 	glog.Infof("server is running %s", conf.Conf.Server.Port)
 	exit := make(chan os.Signal, 1)
-	signal.Notify(exit, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
+	signal.Notify(exit, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
 
 	s := <-exit
 	glog.Infof("server get a signal %s", s.String())
