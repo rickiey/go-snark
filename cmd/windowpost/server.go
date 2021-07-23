@@ -22,7 +22,7 @@ func NewSnarkServer() *SnarkServer {
 func (s *SnarkServer) AllocateTask(ctx context.Context, task *pb.TaskRequest) (*pb.TaskResponse, error) {
 	glog.Info("receive task: ", task.MinerID, " rand: ", task.Random)
 	glog.Info("privbyte: ", task.Privsectors)
-	ss := make([]ffi.PrivateSectorInfo, 0)
+	ss := ffi.SortedPrivateSectorInfo{}
 	err := json.Unmarshal(task.Privsectors, &ss)
 	if nil != err {
 		glog.Info(err)
