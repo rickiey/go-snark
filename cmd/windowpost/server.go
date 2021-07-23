@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	pb "go-snark/cmd/windowpost/proto"
 
@@ -22,12 +21,13 @@ func NewSnarkServer() *SnarkServer {
 func (s *SnarkServer) AllocateTask(ctx context.Context, task *pb.TaskRequest) (*pb.TaskResponse, error) {
 	glog.Info("receive task: ", task.MinerID, " rand: ", task.Random)
 	glog.Info("privbyte: ", task.Privsectors)
-	ss := ffi.SortedPrivateSectorInfo{}
-	err := json.Unmarshal(task.Privsectors, &ss)
+	ss := &ffi.SortedPrivateSectorInfo{}
+	err := ss.UnmarshalJSON(task.Privsectors)
 	if nil != err {
 		glog.Info(err)
 		return nil, err
 	}
+	glog.Info("priv: ", ss.Values())
 
 	return nil, nil
 }
