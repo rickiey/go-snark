@@ -1,8 +1,8 @@
 syntax = "proto3"; //指定proto版本
 
-package pb;
+package windowpost;
 
-option go_package =".;pb";
+option go_package =".;windowpost";
 
 // 注册window worker
 message WindowWorkerRequest{  // 定义请求信息
@@ -16,6 +16,27 @@ service WindowGrpc{
     rpc RegisterWorker(WindowWorkerRequest) returns(WindowWorkerResponse);
     rpc AllocateTask(TaskRequest) returns(TaskResponse);
     rpc HeartBeat(HeartBeatRequest) returns(HeartBeatResponse);
+    rpc CanUsedClient(FreeClientRequest) returns(FreeClientResponse);
+    rpc ReleaseClient(ReleaseClientRequest) returns(ReleaseClientResponse);
+    rpc WorkersInfo(ServerInfoRequest) returns(ServerInfoResponse);
+}
+
+// 释放client
+message ReleaseClientRequest {
+    string ClientAddr = 1;
+}
+
+message ReleaseClientResponse {
+
+}
+
+// 可用的client
+message FreeClientRequest {
+
+}
+
+message FreeClientResponse {
+    string ClientAddr = 1;
 }
 
 // 分配计算任务
@@ -45,6 +66,22 @@ message HeartBeatResponse {
     string Status = 1;
     uint64 RecvTime = 2;
 }
+
+// ServerInfo
+message ServerInfoRequest{
+
+}
+
+message ServerInfoResponse {
+    map<string, ClientInfo> Info = 1;
+}
+
+message ClientInfo {
+    string ClientAddr = 1; 
+    bool Busy = 2;
+}
+
+
 
 
 
