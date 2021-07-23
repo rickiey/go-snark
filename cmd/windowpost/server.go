@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	pb "go-snark/cmd/windowpost/proto"
+	"log"
 
 	ffi "github.com/filecoin-project/filecoin-ffi"
 	"github.com/golang/glog"
@@ -20,18 +20,21 @@ func NewSnarkServer() *SnarkServer {
 
 // AllocateTask 接收计算任务
 func (s *SnarkServer) AllocateTask(ctx context.Context, task *pb.TaskRequest) (*pb.TaskResponse, error) {
-	glog.Info("receive task: ", task.MinerID, " rand: ", task.Random)
-	glog.Info("privbyte: ", task.Privsectors)
-	ss := make([]ffi.PrivateSectorInfo, 0)
-	err := json.Unmarshal(task.Privsectors, &ss)
+	resp := new(pb.TaskResponse)
+	log.Println("receive task: ", task.MinerID, " rand: ", task.Random)
+	log.Println("privbyte: ", task.Privsectors)
+	//ss := make([]ffi.PrivateSectorInfo, 0)
+	//err := json.Unmarshal(task.Privsectors, &ss)
+	ss := &ffi.SortedPrivateSectorInfo{}
+	err := ss.UnmarshalJSON(task.Privsectors)
 	if nil != err {
-		glog.Info(err)
-		return nil, err
+		log.Println(err)
+		return resp, err
 	}
 
-	glog.Info("priv: ", ss)
+	log.Println("priv: ", ss.Values())
 
-	return nil, nil
+	return resp, nil
 }
 
 // HeartBeat 接收心跳检测
