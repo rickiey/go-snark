@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	pb "go-snark/cmd/windowpost/proto"
-	"log"
 
 	ffi "github.com/filecoin-project/filecoin-ffi"
+	"github.com/filecoin-project/go-state-types/abi"
 	"github.com/golang/glog"
 )
 
@@ -21,18 +21,36 @@ func NewSnarkServer() *SnarkServer {
 // AllocateTask 接收计算任务
 func (s *SnarkServer) AllocateTask(ctx context.Context, task *pb.TaskRequest) (*pb.TaskResponse, error) {
 	resp := new(pb.TaskResponse)
-	log.Println("receive task: ", task.MinerID, " rand: ", task.Random)
-	log.Println("privbyte: ", task.Privsectors)
-	//ss := make([]ffi.PrivateSectorInfo, 0)
-	//err := json.Unmarshal(task.Privsectors, &ss)
+	//log.Println("receive task: ", task.MinerID, " rand: ", task.Random)
+	//log.Println("privbyte: ", task.Privsectors)
+
 	ss := &ffi.SortedPrivateSectorInfo{}
 	err := ss.UnmarshalJSON(task.Privsectors)
 	if nil != err {
-		log.Println(err)
+		glog.Infof("SnarkServer.AllocateTask: %s", err.Error())
 		return resp, err
 	}
 
-	log.Println("priv: ", ss.Values())
+	//log.Println("priv: ", ss.Values())
+	proof, faulty, err := ffi.GenerateWindowPoSt(abi.ActorID(task.MinerID), *ss, abi.PoStRandomness(task.Random))
+
+	if nil != err {
+		glog.Infof("SnarkServer.GenerateWindowPoSt: %s", err.Error())
+		return resp, err
+	}
+
+	for _, p := range proof {
+		temp := &pb.PoStProof{
+			PoStProof:  int64(p.PoStProof),
+			ProofBytes: p.ProofBytes,
+		}
+		resp.Proofs = append(resp.Proofs, temp)
+	}
+
+	for _, s := range faulty {
+		temp := uint64(s)
+		resp.SectorNumber = append(resp.SectorNumber, temp)
+	}
 
 	return resp, nil
 }
