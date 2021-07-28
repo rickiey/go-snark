@@ -4,9 +4,9 @@ import (
 	"context"
 	"flag"
 	pb "go-snark/cmd/windowpost/proto"
+	"log"
 	"net"
 
-	"github.com/golang/glog"
 	"google.golang.org/grpc"
 )
 
@@ -35,7 +35,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	glog.Info("grpc server Listing on", *LocalAddr)
+	log.Println("grpc server Listing on", *LocalAddr)
 
 	grpcServer := grpc.NewServer() // 新建gRPC服务器实例
 
@@ -50,7 +50,7 @@ func main() {
 		panic("register failed")
 	}
 
-	glog.Info("register success")
+	log.Println("register success")
 
 	server := NewSnarkServer()
 

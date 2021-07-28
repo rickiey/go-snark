@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	pb "go-snark/cmd/windowpost/proto"
+	"log"
 
-	"github.com/golang/glog"
 	"google.golang.org/grpc"
 )
 
@@ -20,7 +20,7 @@ func NewSnarkClient(remoteAddr string) *SnarkClient {
 }
 
 func (c *SnarkClient) connect(function string) (pb.WindowGrpcClient, *grpc.ClientConn, error) {
-	glog.Infof("window snark client(%s) connect to %s", function, c.RemoteAddr)
+	log.Printf("window snark client(%s) connect to %s\n", function, c.RemoteAddr)
 	conn, err := grpc.Dial(c.RemoteAddr, grpc.WithInsecure()) //连接gRPC服务器
 	if err != nil {
 		return nil, nil, err

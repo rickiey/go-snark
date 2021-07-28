@@ -6,11 +6,10 @@ import (
 	"errors"
 	pb "go-snark/cmd/windowpost/proto"
 	"io/ioutil"
-	"time"
+	"log"
 
 	ffi "github.com/filecoin-project/filecoin-ffi"
 	"github.com/filecoin-project/go-state-types/abi"
-	"github.com/golang/glog"
 )
 
 type SnarkServer struct {
@@ -30,20 +29,20 @@ func (s *SnarkServer) AllocateTask(ctx context.Context, task *pb.TaskRequest) (*
 	// 将参数记录在文件里
 	param, err := json.Marshal(task)
 	if nil != err {
-		glog.Infof("SnarkServer.Marshal: %s", err.Error())
+		log.Println("SnarkServer.Marshal: ", err.Error())
 		return resp, err
 	}
 
 	err = ioutil.WriteFile("window_param.out", param, 0644)
 	if nil != err {
-		glog.Infof("SnarkServer.WriteFile: %s", err.Error())
+		log.Println("SnarkServer.WriteFile: ", err.Error())
 		return resp, err
 	}
 
 	ss := &ffi.SortedPrivateSectorInfo{}
 	err = ss.UnmarshalJSON(task.Privsectors)
 	if nil != err {
-		glog.Infof("SnarkServer.AllocateTask: %s", err.Error())
+		log.Println("SnarkServer.AllocateTask: ", err.Error())
 		return resp, err
 	}
 
@@ -51,7 +50,7 @@ func (s *SnarkServer) AllocateTask(ctx context.Context, task *pb.TaskRequest) (*
 	proof, faulty, err := ffi.GenerateWindowPoSt(abi.ActorID(task.MinerID), *ss, abi.PoStRandomness(task.Random))
 
 	if nil != err {
-		glog.Infof("SnarkServer.GenerateWindowPoSt: %s", err.Error())
+		log.Println("SnarkServer.GenerateWindowPoSt: ", err.Error())
 		return resp, err
 	}
 
@@ -73,10 +72,9 @@ func (s *SnarkServer) AllocateTask(ctx context.Context, task *pb.TaskRequest) (*
 
 // HeartBeat 接收心跳检测
 func (s *SnarkServer) HeartBeat(ctx context.Context, req *pb.HeartBeatRequest) (*pb.HeartBeatResponse, error) {
-	glog.Info("receive heart beat: ", req.SentTime)
+	log.Println("receive heart beat: ", req.SentTime)
 	resp := &pb.HeartBeatResponse{
-		Status:   "OK",
-		RecvTime: time.Now().UnixNano(),
+		Status: "OK",
 	}
 
 	return resp, nil
