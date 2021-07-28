@@ -6,6 +6,7 @@ import (
 	"errors"
 	pb "go-snark/cmd/windowpost/proto"
 	"io/ioutil"
+	"time"
 
 	ffi "github.com/filecoin-project/filecoin-ffi"
 	"github.com/filecoin-project/go-state-types/abi"
@@ -73,7 +74,12 @@ func (s *SnarkServer) AllocateTask(ctx context.Context, task *pb.TaskRequest) (*
 // HeartBeat 接收心跳检测
 func (s *SnarkServer) HeartBeat(ctx context.Context, req *pb.HeartBeatRequest) (*pb.HeartBeatResponse, error) {
 	glog.Info("receive heart beat: ", req.SentTime)
-	return nil, nil
+	resp := &pb.HeartBeatResponse{
+		Status:   "OK",
+		RecvTime: time.Now().UnixNano(),
+	}
+
+	return resp, nil
 }
 
 // RegisterWorker snark server 端无需实现
