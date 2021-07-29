@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	pb "go-snark/cmd/windowpost/proto"
 	"io/ioutil"
 	"log"
@@ -78,9 +77,4 @@ func (s *SnarkServer) HeartBeat(ctx context.Context, req *pb.HeartBeatRequest) (
 	}
 
 	return resp, nil
-}
-
-// RegisterWorker snark server 端无需实现
-func (s *SnarkServer) RegisterWorker(ctx context.Context, req *pb.WindowWorkerRequest) (*pb.WindowWorkerResponse, error) {
-	return nil, errors.New("unimplements")
 }
