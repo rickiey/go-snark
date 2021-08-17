@@ -6,12 +6,14 @@ import (
 	pb "go-snark/cmd/windowpost/proto"
 	"log"
 	"net"
+	"os"
 
 	"google.golang.org/grpc"
 )
 
-var LocalAddr = flag.String("local_addr", "", "the local addr:port")
-var RemoteAddr = flag.String("remote_addr", "", "remote server addr:port")
+var LocalAddr = flag.String("local_addr", "", "the local listen addr:port")
+var RemoteAddr = flag.String("remote_addr", "", "remote rpc server addr:port")
+var GpuVisible = flag.String("use_gpu", "0", "which gpu use by this server")
 
 /**
 snark （每台挂载存储，2/4张卡，对应2/4个进程，端口区分，各为一个worker）
@@ -28,13 +30,23 @@ func init() {
 	if *LocalAddr == "" || *RemoteAddr == "" {
 		panic("local addr or remote add cannot empty")
 	}
+
+	// 设置环境变量，限定该进程可见的GPU
+	err := os.Setenv("CUDA_VISIBLE_DEVICES", *GpuVisible)
+	if nil != err {
+		panic(err)
+	}
+
+	log.Printf("CUDA_VISIBLE_DEVICES is %s\n", os.Getenv("CUDA_VISIBLE_DEVICES"))
 }
 
 func main() {
+
 	listener, err := net.Listen("tcp", *LocalAddr) // 监听本地端口
 	if err != nil {
 		panic(err)
 	}
+
 	log.Println("grpc server Listing on", *LocalAddr)
 
 	grpcServer := grpc.NewServer() // 新建gRPC服务器实例

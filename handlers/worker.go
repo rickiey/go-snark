@@ -51,6 +51,8 @@ func SealCommitPhase2(c *gin.Context) {
 			status = 2
 			finalResult = hex.EncodeToString(result)
 		}
+		glog.Infof("sector: %d, result: %s", data.SectorID, finalResult)
+		// TODO, 先往redis里面放一份，避免连接mysql的外网出问题
 
 		err = dao.ChangeTaskStatus(finalResult, data.Miner, conf.Conf.Server.IpAddr, status, data.SectorID)
 		if nil != err {
