@@ -70,7 +70,7 @@ func (s *SnarkServer) AllocateTask(ctx context.Context, task *pb.TaskRequest) (*
 
 // HeartBeat 接收心跳检测
 func (s *SnarkServer) HeartBeat(ctx context.Context, req *pb.HeartBeatRequest) (*pb.HeartBeatResponse, error) {
-	log.Println("receive heart beat: ", req.SentTime)
+	//log.Println("receive heart beat: ", req.SentTime)
 	resp := &pb.HeartBeatResponse{
 		Status: "OK",
 	}
