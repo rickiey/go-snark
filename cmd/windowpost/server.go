@@ -2,9 +2,7 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	pb "go-snark/cmd/windowpost/proto"
-	"io/ioutil"
 	"log"
 
 	ffi "github.com/filecoin-project/filecoin-ffi"
@@ -25,7 +23,7 @@ func (s *SnarkServer) AllocateTask(ctx context.Context, task *pb.TaskRequest) (*
 	//log.Println("receive task: ", task.MinerID, " rand: ", task.Random)
 	//log.Println("privbyte: ", task.Privsectors)
 	// 将参数记录在文件里, 用于测试
-	param, err := json.Marshal(task)
+	/* param, err := json.Marshal(task)
 	if nil != err {
 		log.Println("SnarkServer.Marshal: ", err.Error())
 		return resp, err
@@ -35,10 +33,10 @@ func (s *SnarkServer) AllocateTask(ctx context.Context, task *pb.TaskRequest) (*
 	if nil != err {
 		log.Println("SnarkServer.WriteFile: ", err.Error())
 		return resp, err
-	}
+	} */
 
 	ss := &ffi.SortedPrivateSectorInfo{}
-	err = ss.UnmarshalJSON(task.Privsectors)
+	err := ss.UnmarshalJSON(task.Privsectors)
 	if nil != err {
 		log.Println("SnarkServer.AllocateTask: ", err.Error())
 		return resp, err
