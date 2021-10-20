@@ -7,10 +7,13 @@
 ## 修改
     1. extern/bellperson/src/gpu/locks.rs
         pub fn lock() -> GPULock {} 注释这一行 //f.lock_exclusive().unwrap();
+        pub fn lock() -> PriorityLock {} 注释这一行 //f.lock_exclusive().unwrap();
+        pub fn wait(priority: bool) {} 函数体注释掉，且将参数前缀加_
     2. extern/filecoin-ffi/rust/Cargo.toml
         在最底下添加 
         [patch.crates-io]
         bellperson = {path = "../../bellperson"}
+    
 ## 运行
     1. 分别添加配置文件config0.toml, config1.toml
     2. 执行go-snark --conf=config0.toml 使用0号GPU
