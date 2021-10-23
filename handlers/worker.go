@@ -2,11 +2,9 @@ package handlers
 
 import (
 	"encoding/hex"
-	"encoding/json"
 	"go-snark/conf"
 	"go-snark/dao"
 	"go-snark/model"
-	"io/ioutil"
 	"net/http"
 
 	ffi "github.com/filecoin-project/filecoin-ffi"
