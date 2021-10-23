@@ -29,7 +29,7 @@ func SealCommitPhase2(c *gin.Context) {
 		return
 	}
 
-	// 将参数存下来，以备测试
+	/* // 将参数存下来，以备测试
 	d, err := json.Marshal(data)
 	if nil != err {
 		glog.Infof("Marshal err: %s", err.Error())
@@ -40,7 +40,7 @@ func SealCommitPhase2(c *gin.Context) {
 	if nil != err {
 		glog.Infof("WriteFile err: %s", err.Error())
 		return
-	}
+	} */
 
 	maddr, err := address.NewFromString(data.Miner)
 	if nil != err {
