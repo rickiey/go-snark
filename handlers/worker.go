@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"go-snark/conf"
 	"go-snark/dao"
 	"go-snark/model"
+	"io/ioutil"
 	"net/http"
 
 	ffi "github.com/filecoin-project/filecoin-ffi"
@@ -24,6 +26,19 @@ func SealCommitPhase2(c *gin.Context) {
 	err := c.BindJSON(&data)
 	if nil != err {
 		glog.Infof("resolve param: %s", err.Error())
+		return
+	}
+
+	// 将参数存下来，以备测试
+	d, err := json.Marshal(data)
+	if nil != err {
+		glog.Infof("Marshal err: %s", err.Error())
+		return
+	}
+
+	err = ioutil.WriteFile("c2param.txt", d, 0666)
+	if nil != err {
+		glog.Infof("WriteFile err: %s", err.Error())
 		return
 	}
 
