@@ -27,19 +27,6 @@ func SealCommitPhase2(c *gin.Context) {
 		return
 	}
 
-	/* // 将参数存下来，以备测试
-	d, err := json.Marshal(data)
-	if nil != err {
-		glog.Infof("Marshal err: %s", err.Error())
-		return
-	}
-
-	err = ioutil.WriteFile("c2param.txt", d, 0666)
-	if nil != err {
-		glog.Infof("WriteFile err: %s", err.Error())
-		return
-	} */
-
 	maddr, err := address.NewFromString(data.Miner)
 	if nil != err {
 		glog.Infof("NewFromString %s: %s", data.Miner, err.Error())
