@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"go-snark/conf"
 	"go-snark/dao"
 	"go-snark/router"
@@ -28,18 +27,23 @@ func init() {
 		panic(err)
 	}
 	gin.SetMode(conf.Conf.Server.Env)
-	// 设置环境变量，限定该进程可见的GPU
-	err := os.Setenv("CUDA_VISIBLE_DEVICES", conf.Conf.Server.GpuVisible)
+
+	if conf.Conf.Server.GpuVisible != "all" {
+		// 设置环境变量，限定该进程可见的GPU
+		err := os.Setenv("CUDA_VISIBLE_DEVICES", conf.Conf.Server.GpuVisible)
+		if nil != err {
+			panic(err)
+		}
+	}
+
+	err := CheckGpu()
 	if nil != err {
 		panic(err)
 	}
+
 	glog.Infof("CUDA_VISIBLE_DEVICES is %s", conf.Conf.Server.GpuVisible)
 	glog.Infof("This worker's addr is %s", conf.Conf.Server.IpAddr)
 	glog.Infof("GPU is %s", conf.Conf.Server.GpuType)
-	err = CheckGpu()
-	if nil != err {
-		panic(err)
-	}
 
 	dao.InitDB()
 
@@ -54,10 +58,6 @@ func CheckGpu() error {
 	gpus, err := ffi.GetGPUDevices()
 	if nil != err {
 		return err
-	}
-
-	if len(gpus) > 1 {
-		return fmt.Errorf("current gpu number is %d", len(gpus))
 	}
 
 	glog.Infof("This worker has %d GPU devices", len(gpus))
