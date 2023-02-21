@@ -13,6 +13,6 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/golang/glog v0.0.0-20210429001901-424d2337a529
 	google.golang.org/genproto v0.0.0-20210715145939-324b959e9c22 // indirect
-	google.golang.org/grpc v1.39.0
+	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.27.1
 )
