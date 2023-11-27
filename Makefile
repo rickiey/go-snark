@@ -1,7 +1,7 @@
 
 all: go-snark window-snark
 
-env:
+env: clean
 	git submodule update --init --recursive; cd extern/filecoin-ffi; make all; cd  ../..; go mod tidy; mkdir bin;
 
 go-snark: env
@@ -10,6 +10,11 @@ go-snark: env
 window-snark: env
 	go build -o bin/window-snark cmd/windowpost/*.go
 
+
+dist-clean: clean
+	git clean -xdff
+	git submodule deinit --all -f
+.PHONY: dist-clean
 
 clean:
 	rm -rf bin
