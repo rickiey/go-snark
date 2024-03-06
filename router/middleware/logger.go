@@ -28,6 +28,9 @@ func LoggerHandler(c *gin.Context) {
 	if "" != raw {
 		path = path + "?" + raw
 	}
+	if path == "/ping" || method == "GET" {
+		return
+	}
 	glog.Infof("METHOD:%s | PATH:%s | CODE:%d | IP:%s | TIME:%d | ECODE:%d", method, path, statusCode, clientIP,
 		latency/time.Millisecond, ecode)
 }
